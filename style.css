@@ -1,0 +1,43 @@
+P{
+    color: rgb(193, 241, 0);
+
+    background-color:rgb(161, 14, 240);
+    
+}
+.div-por-dentro{
+    background-color: rgb(26, 255, 183);
+    height: 30%px;
+    width: 50%;
+    position: relative;
+}
+.div-por-dentr-centralizada{
+    background-color: rgb(26, 255, 183);
+    height: 30%px;
+    width: 50%;
+    position: relative;
+}
+.div-por-fora{
+    background-color: rgb(232, 48, 48);
+    height: 30%px;
+    width: 90%;
+    position:relative;
+    display: flex;
+
+}
+.divs{
+    background-color: black;
+    font-weight: bold;
+}
+#nome{
+    background-color: goldenrod;
+}
+.texto{
+    background-color: brown;
+    font-weight: bold;
+    color: rgb(66, 243, 12);
+
+}
+h1{
+    color: blueviolet;
+}
+ 
