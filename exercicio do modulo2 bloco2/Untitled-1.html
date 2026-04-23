@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS Boxes</title>
+  <style>
+    /* Box 1 — cadetblue, padding 20px, borda 10px preta */
+    .box1 {
+      width: 200px;
+      height: 200px;
+      background-color: cadetblue;
+      padding: 20px;
+      border: 10px solid black;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    /* Remove margem padrão do <p> */
+    .box1 p {
+      margin: 0;
+    }
+
+    /* Box 2 — gold, borda top/bottom 20px, left/right 10px */
+    .box2 {
+      width: 200px;
+      height: 200px;
+      background-color: gold;
+      border-top: 20px solid black;
+      border-bottom: 20px solid black;
+      border-left: 10px solid black;
+      border-right: 10px solid black;
+      box-sizing: border-box;
+      margin: 0;
+    }
+
+    /* Box 3 — indianred, borda 10px */
+    .box3 {
+      width: 200px;
+      height: 200px;
+      background-color: indianred;
+      border: 10px solid black;
+      box-sizing: border-box;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="box1">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at sapien
+    porttitor urna elementum lacinia. In id magna pulvinar, ultricies lorem id,
+    vehicula elit. Aliquam eu luctus nisl, vitae pellentesque magna. Phasellus
+    dolor metus, laoreet ac convallis sit amet, efficitur sed dolor.</p>
+  </div>
+
+  <div class="box2"></div>
+
+  <div class="box3"></div>
+
+</body>
+</html>
