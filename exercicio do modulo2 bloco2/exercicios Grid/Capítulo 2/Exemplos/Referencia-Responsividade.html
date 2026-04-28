@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS — Display, Float e Responsividade</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f7f7f5;
+    --bg3: #efeeeb;
+    --border: #e3e2df;
+    --border2: #d3d2ce;
+    --text: #1a1a1a;
+    --text2: #5a5a5a;
+    --text3: #8a8a8a;
+    --accent: #2f80ed;
+    --accent-bg: #eef4fd;
+    --green: #0f7b3d;
+    --green-bg: #edf7f2;
+    --amber: #7a4f00;
+    --amber-bg: #fdf6e3;
+    --red: #c0392b;
+    --purple: #6b46c1;
+    --purple-bg: #f5f0ff;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+    --radius: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  /* ── NAV ── */
+  .sticky-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(255,255,255,0.96);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .sticky-nav::-webkit-scrollbar { display: none; }
+  .sticky-nav a {
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text3);
+    text-decoration: none;
+    padding: 0 14px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .sticky-nav a:hover { color: var(--text); }
+  .sticky-nav a.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── HEADER ── */
+  .page-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .module-tag {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .page-title { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 0.8rem; }
+  .page-intro { font-size: 1rem; color: var(--text2); line-height: 1.75; }
+
+  /* ── TOC ── */
+  .toc {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.5rem;
+    margin-bottom: 3rem;
+  }
+  .toc-title { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.8rem; }
+  .toc ol { padding-left: 1.2rem; display: flex; flex-direction: column; gap: 4px; }
+  .toc li { font-size: 0.9rem; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* ── SECTIONS ── */
+  .section { margin-bottom: 4rem; scroll-margin-top: 60px; }
+  .section-divider { height: 1px; background: var(--border); margin: 4rem 0; }
+
+  /* ── TYPOGRAPHY ── */
+  h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 1.2rem; }
+  h2 { font-size: 1.2rem; font-weight: 600; margin: 2.5rem 0 0.8rem; }
+  h3 { font-size: 1rem; font-weight: 600; margin: 1.8rem 0 0.6rem; }
+  p { color: var(--text2); margin-bottom: 0.9rem; line-height: 1.75; font-size: 0.95rem; }
+  p strong { color: var(--text); font-weight: 600; }
+  ul, ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+  li { color: var(--text2); margin-bottom: 0.3rem; line-height: 1.7; font-size: 0.93rem; }
+  li strong { color: var(--text); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.8em;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--red);
+  }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: #1e1e2e;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 1.2rem 0;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+  }
+  .code-block-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 14px;
+    background: #2a2a3e;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .code-lang { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #7c7c99; }
+  .code-block pre { padding: 1.2rem 1.4rem; overflow-x: auto; color: #cdd6f4; }
+  .kw { color: #cba6f7; } .sel { color: #89b4fa; } .prop { color: #94e2d5; }
+  .val { color: #fab387; } .str { color: #a6e3a1; } .cmt { color: #6c7086; font-style: italic; }
+  .tag { color: #f38ba8; } .attr { color: #f9e2af; }
+
+  /* ── DEMO ── */
+  .demo {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+  .demo-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; } .dot-a { background: #ffbd2e; } .dot-g { background: #28ca41; }
+
+  .demo-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 560px) { .demo-split { grid-template-columns: 1fr; } }
+
+  .demo-code-pane {
+    background: #1e1e2e;
+    padding: 1.2rem 1.4rem;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: #cdd6f4;
+    overflow-x: auto;
+    border-right: 1px solid var(--border);
+  }
+
+  .demo-result {
+    padding: 1.5rem;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+  }
+
+  /* ── COLLAPSE ── */
+  .collapse-wrap { margin: 1.2rem 0; }
+  .collapse-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.7rem 1rem;
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text2);
+    text-align: left;
+    transition: background 0.15s;
+  }
+  .collapse-toggle:hover { background: var(--bg3); color: var(--text); }
+  .collapse-toggle .arrow { margin-left: auto; font-size: 10px; transition: transform 0.2s; color: var(--text3); }
+  .collapse-toggle.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; }
+  .collapse-toggle.open .arrow { transform: rotate(90deg); }
+  .collapse-body { display: none; border: 1px solid var(--border); border-top: none; border-bottom-left-radius: var(--radius); border-bottom-right-radius: var(--radius); overflow: hidden; }
+  .collapse-body.open { display: block; }
+  .collapse-body .code-block { margin: 0; border-radius: 0; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    display: flex;
+    gap: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.9rem 1.1rem;
+    margin: 1.2rem 0;
+  }
+  .callout-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .callout p { margin: 0; font-size: 0.88rem; }
+  .callout.blue { background: var(--accent-bg); border-color: #bdd4f7; }
+  .callout.amber { background: var(--amber-bg); border-color: #f0dfa0; }
+  .callout.green { background: var(--green-bg); border-color: #b7e2cc; }
+  .callout.purple { background: var(--purple-bg); border-color: #d6bcfa; }
+
+  /* ── TABLE ── */
+  .table-wrap { overflow-x: auto; margin: 1.2rem 0; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+  th { background: var(--bg2); padding: 9px 14px; text-align: left; font-weight: 600; font-size: 11px; letter-spacing: 0.04em; color: var(--text3); border-bottom: 1px solid var(--border); }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--border); color: var(--text2); vertical-align: top; }
+  td:first-child { font-family: var(--mono); font-size: 12px; color: var(--purple); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg2); }
+
+  /* ── BREAKPOINT PILLS ── */
+  .bp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    margin: 1.2rem 0;
+  }
+  .bp-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    text-align: center;
+  }
+  .bp-icon { font-size: 1.8rem; margin-bottom: 6px; }
+  .bp-range { font-family: var(--mono); font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .bp-name { font-size: 13px; font-weight: 600; color: var(--text); }
+
+  /* ── INTERACTIVE FLEXBOX ── */
+  .flex-playground {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+  .flex-playground-header {
+    padding: 8px 14px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .flex-controls {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--bg2);
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 4px; }
+  .ctrl-group label { font-size: 11px; font-family: var(--mono); color: var(--text3); letter-spacing: 0.04em; }
+  .ctrl-group select {
+    background: white;
+    border: 1px solid var(--border2);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 8px;
+    font-size: 12px;
+    font-family: var(--mono);
+    cursor: pointer;
+  }
+  .flex-result {
+    padding: 1.2rem;
+    background: white;
+    min-height: 120px;
+  }
+  #flex-container {
+    display: flex;
+    gap: 8px;
+    background: #f4f4f9;
+    padding: 10px;
+    border-radius: 6px;
+    min-height: 90px;
+    transition: all 0.3s;
+  }
+  .flex-item {
+    background: #7c3aed;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-family: Arial;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .flex-item:nth-child(2) { background: #5b21b6; }
+  .flex-item:nth-child(3) { background: #4c1d95; }
+  .flex-code {
+    padding: 8px 14px;
+    background: #1e1e2e;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: #cdd6f4;
+    border-top: 1px solid var(--border);
+  }
+  #flex-code-display { color: #94e2d5; }
+</style>
+</head>
+<body>
+
+<nav class="sticky-nav" id="nav">
+  <a href="#display">Display</a>
+  <a href="#float">Float</a>
+  <a href="#flexbox">Flexbox</a>
+  <a href="#media-queries">Media Queries</a>
+  <a href="#responsividade">Responsividade</a>
+</nav>
+
+<div class="page">
+
+  <header class="page-header">
+    <span class="module-tag">Módulo II · Referência</span>
+    <h1 class="page-title">Display, Float e Responsividade</h1>
+    <p class="page-intro">Guia de referência dos conceitos que você vai precisar para os exercícios. Leia com atenção antes de começar a praticar.</p>
+  </header>
+
+  <nav class="toc">
+    <p class="toc-title">Nesta página</p>
+    <ol>
+      <li><a href="#display">A propriedade Display</a></li>
+      <li><a href="#float">Float e Clear</a></li>
+      <li><a href="#flexbox">Flexbox</a></li>
+      <li><a href="#media-queries">Media Queries</a></li>
+      <li><a href="#responsividade">Responsividade — escolhendo a ferramenta certa</a></li>
+    </ol>
+  </nav>
+
+  <!-- ═══════════════════════════════════════
+       1. DISPLAY
+  ═══════════════════════════════════════ -->
+  <section class="section" id="display">
+    <h1>A Propriedade <code>display</code></h1>
+
+    <p>A propriedade <code>display</code> define como um elemento <strong>se comporta no espaço</strong> — se ocupa a linha toda, se fica lado a lado com outros, ou se desaparece completamente.</p>
+
+    <h2><code>display: block</code></h2>
+    <p>O elemento ocupa <strong>100% da largura</strong> disponível e sempre força o próximo elemento a começar em uma nova linha. Permite definir <code>width</code> e <code>height</code>. Tags como <code>&lt;div&gt;</code>, <code>&lt;p&gt;</code> e <code>&lt;h1&gt;</code> são <code>block</code> por padrão.</p>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>display: block</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">.caixa</span> {
+  <span class="prop">display</span>: <span class="val">block</span>;
+  <span class="prop">width</span>: <span class="val">160px</span>;
+  <span class="prop">height</span>: <span class="val">50px</span>;
+  <span class="prop">background</span>: <span class="val">#e74c3c</span>;
+}
+
+<span class="cmt">/* Cada caixa ocupa sua
+   própria linha */</span></pre></div>
+        <div class="demo-result" style="flex-direction:column;align-items:flex-start;gap:6px;padding:1.2rem;">
+          <div style="display:block;width:160px;height:50px;background:#e74c3c;border-radius:3px;display:flex;align-items:center;justify-content:center;color:white;font-family:Arial;font-size:12px;font-weight:700">Caixa 1</div>
+          <div style="display:block;width:160px;height:50px;background:#e74c3c;border-radius:3px;display:flex;align-items:center;justify-content:center;color:white;font-family:Arial;font-size:12px;font-weight:700">Caixa 2</div>
+          <div style="display:block;width:160px;height:50px;background:#e74c3c;border-radius:3px;display:flex;align-items:center;justify-content:center;color:white;font-family:Arial;font-size:12px;font-weight:700">Caixa 3</div>
+        </div>
+      </div>
+    </div>
+
+    <h2><code>display: inline</code></h2>
+    <p>O elemento ocupa apenas o espaço do seu conteúdo e fica <strong>lado a lado</strong> com outros elementos. <strong>Não aceita</strong> <code>width</code> nem <code>height</code> — o tamanho é determinado pelo conteúdo. Tags como <code>&lt;span&gt;</code> e <code>&lt;a&gt;</code> são <code>inline</code> por padrão.</p>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>display: inline</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">.caixa</span> {
+  <span class="prop">display</span>: <span class="val">inline</span>;
+  <span class="prop">background</span>: <span class="val">#3498db</span>;
+  <span class="prop">color</span>: <span class="val">white</span>;
+  <span class="prop">padding</span>: <span class="val">4px 10px</span>;
+
+  <span class="cmt">/* Ignoradas! */</span>
+  <span class="prop">width</span>: <span class="val">200px</span>;
+  <span class="prop">height</span>: <span class="val">60px</span>;
+}</pre></div>
+        <div class="demo-result">
+          <div style="font-family:Arial;font-size:13px;line-height:2.4">
+            <span style="display:inline;background:#3498db;color:white;padding:4px 10px;border-radius:3px;margin-right:4px">Caixa 1</span>
+            <span style="display:inline;background:#3498db;color:white;padding:4px 10px;border-radius:3px;margin-right:4px">Caixa 2 maior</span>
+            <span style="display:inline;background:#3498db;color:white;padding:4px 10px;border-radius:3px">Caixa 3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2><code>display: inline-block</code></h2>
+    <p>O melhor dos dois mundos: fica <strong>lado a lado</strong> como <code>inline</code>, mas aceita <code>width</code> e <code>height</code> como <code>block</code>. Ideal para menus e galerias onde você quer controlar o tamanho exato dos itens.</p>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>display: inline-block</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">.caixa</span> {
+  <span class="prop">display</span>: <span class="val">inline-block</span>;
+  <span class="prop">background</span>: <span class="val">#2ecc71</span>;
+  <span class="prop">color</span>: <span class="val">white</span>;
+  <span class="prop">width</span>: <span class="val">90px</span>;  <span class="cmt">✅ funciona</span>
+  <span class="prop">height</span>: <span class="val">70px</span>; <span class="cmt">✅ funciona</span>
+  <span class="prop">text-align</span>: <span class="val">center</span>;
+  <span class="prop">line-height</span>: <span class="val">70px</span>;
+}</pre></div>
+        <div class="demo-result" style="gap:6px;flex-wrap:wrap;">
+          <div style="display:inline-block;background:#2ecc71;color:white;width:90px;height:70px;text-align:center;line-height:70px;font-family:Arial;font-size:12px;font-weight:700;border-radius:3px;margin:3px">Caixa 1</div>
+          <div style="display:inline-block;background:#2ecc71;color:white;width:90px;height:70px;text-align:center;line-height:70px;font-family:Arial;font-size:12px;font-weight:700;border-radius:3px;margin:3px">Caixa 2</div>
+          <div style="display:inline-block;background:#2ecc71;color:white;width:90px;height:70px;text-align:center;line-height:70px;font-family:Arial;font-size:12px;font-weight:700;border-radius:3px;margin:3px">Caixa 3</div>
+        </div>
+      </div>
+    </div>
+
+    <h2><code>display: none</code></h2>
+    <p>O elemento <strong>desaparece completamente</strong> — não ocupa espaço, como se nunca tivesse existido no HTML.</p>
+
+    <div class="callout amber">
+      <span class="callout-icon">⚠️</span>
+      <div><p><code>display: none</code> remove o elemento do fluxo. <code>visibility: hidden</code> apenas o torna invisível, mas o espaço continua ocupado.</p></div>
+    </div>
+
+    <h2>Resumo</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Valor</th><th>Fica lado a lado?</th><th>Aceita width/height?</th><th>Ocupa espaço?</th></tr></thead>
+        <tbody>
+          <tr><td>block</td><td>Não — quebra a linha</td><td>Sim</td><td>Sim</td></tr>
+          <tr><td>inline</td><td>Sim</td><td>Não</td><td>Sim</td></tr>
+          <tr><td>inline-block</td><td>Sim</td><td>Sim</td><td>Sim</td></tr>
+          <tr><td>none</td><td>—</td><td>—</td><td>Não</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ═══════════════════════════════════════
+       2. FLOAT
+  ═══════════════════════════════════════ -->
+  <section class="section" id="float">
+    <h1>Float e Clear</h1>
+
+    <p>A propriedade <code>float</code> <strong>retira o elemento do fluxo normal</strong> do HTML e o empurra para um lado, permitindo que o conteúdo seguinte suba e ocupe o espaço ao lado dele — o clássico efeito de texto ao redor de imagem.</p>
+
+    <h2><code>float: left</code> e <code>float: right</code></h2>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>float: left — texto envolve pela direita</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">img</span> {
+  <span class="prop">float</span>: <span class="val">left</span>;
+  <span class="prop">margin-right</span>: <span class="val">12px</span>;
+  <span class="prop">width</span>: <span class="val">80px</span>;
+}
+
+<span class="cmt">/* O parágrafo seguinte
+   envolve a imagem */</span></pre></div>
+        <div class="demo-result" style="display:block;background:white;padding:1.2rem;min-height:120px;">
+          <div style="float:left;width:70px;height:70px;background:#bfdbfe;border-radius:4px;margin-right:12px;display:flex;align-items:center;justify-content:center;font-size:24px">🐱</div>
+          <p style="font-family:Arial;font-size:12px;color:#444;line-height:1.6;margin:0">Este texto flui ao redor da imagem graças ao <strong>float: left</strong>. O conteúdo sobe e ocupa o espaço disponível ao lado do elemento flutuante.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>float: right — elemento vai para a direita</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">img</span> {
+  <span class="prop">float</span>: <span class="val">right</span>;
+  <span class="prop">margin-left</span>: <span class="val">12px</span>;
+  <span class="prop">width</span>: <span class="val">80px</span>;
+}</pre></div>
+        <div class="demo-result" style="display:block;background:white;padding:1.2rem;min-height:120px;">
+          <div style="float:right;width:70px;height:70px;background:#fde68a;border-radius:4px;margin-left:12px;display:flex;align-items:center;justify-content:center;font-size:24px">🐶</div>
+          <p style="font-family:Arial;font-size:12px;color:#444;line-height:1.6;margin:0">Com <strong>float: right</strong>, o elemento vai para a direita e o texto envolve pelo lado esquerdo.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>A propriedade <code>clear</code></h2>
+    <p>O <code>float</code> afeta todos os elementos que vêm depois dele. Quando você não quer que um elemento fique ao lado do item flutuante, usa <code>clear</code> para "limpar" o float.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Valor</th><th>Comportamento</th></tr></thead>
+        <tbody>
+          <tr><td>clear: left</td><td>Não flutua ao lado de elementos com <code>float: left</code></td></tr>
+          <tr><td>clear: right</td><td>Não flutua ao lado de elementos com <code>float: right</code></td></tr>
+          <tr><td>clear: both</td><td>Não flutua ao lado de nenhum float — o mais usado</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>clear: both — footer sempre abaixo dos floats</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">.coluna-esq</span> { <span class="prop">float</span>: <span class="val">left</span>; <span class="prop">width</span>: <span class="val">45%</span>; }
+<span class="sel">.coluna-dir</span> { <span class="prop">float</span>: <span class="val">right</span>; <span class="prop">width</span>: <span class="val">45%</span>; }
+
+<span class="sel">footer</span> {
+  <span class="prop">clear</span>: <span class="val">both</span>;
+  <span class="cmt">/* Garante que o footer
+     fique abaixo das colunas */</span>
+}</pre></div>
+        <div class="demo-result" style="display:block;background:white;padding:1rem;min-height:130px;">
+          <div style="overflow:hidden;margin-bottom:0;">
+            <div style="float:left;width:44%;background:aquamarine;padding:10px;border-radius:4px;font-family:Arial;font-size:11px;color:#1a1a1a;font-weight:700">Coluna Esquerda</div>
+            <div style="float:right;width:44%;background:coral;padding:10px;border-radius:4px;font-family:Arial;font-size:11px;color:#1a1a1a;font-weight:700">Coluna Direita</div>
+          </div>
+          <div style="clear:both;background:#333;color:white;text-align:center;padding:8px;font-family:Arial;font-size:11px;border-radius:4px;margin-top:8px;font-weight:700">Footer — clear: both</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout blue">
+      <span class="callout-icon">💡</span>
+      <div><p>Sempre que usar <code>float</code> para criar colunas, aplique <code>clear: both</code> no elemento que vem depois (normalmente o <code>footer</code>) para evitar que ele suba e fique sobreposto às colunas.</p></div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ═══════════════════════════════════════
+       3. FLEXBOX
+  ═══════════════════════════════════════ -->
+  <section class="section" id="flexbox">
+    <h1>Flexbox</h1>
+
+    <p>O Flexbox é um sistema de layout <strong>unidimensional</strong> — organiza elementos em uma linha ou em uma coluna. É ativado no elemento pai com <code>display: flex</code>, e as propriedades controlam como os filhos se distribuem dentro dele.</p>
+
+    <div class="callout blue">
+      <span class="callout-icon">📐</span>
+      <div><p><strong>Regra de ouro:</strong> as propriedades do Flexbox se dividem entre as que vão no <strong>pai (contêiner)</strong> e as que vão nos <strong>filhos (itens)</strong>.</p></div>
+    </div>
+
+    <h2>Propriedades do Contêiner (pai)</h2>
+
+    <h3><code>display: flex</code></h3>
+    <p>Ativa o Flexbox. Todos os filhos diretos passam a ser <strong>itens flex</strong> e se organizam em linha por padrão.</p>
+
+    <h3><code>flex-direction</code></h3>
+    <p>Define a direção dos itens — em linha (<code>row</code>, padrão) ou em coluna (<code>column</code>).</p>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>flex-direction: row vs column</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="cmt">/* row (padrão) — em linha */</span>
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-direction</span>: <span class="val">row</span>;
+}
+
+<span class="cmt">/* column — em coluna */</span>
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-direction</span>: <span class="val">column</span>;
+}</pre></div>
+        <div class="demo-result" style="flex-direction:column;gap:14px;background:white;padding:1.2rem;align-items:stretch;">
+          <div>
+            <p style="font-family:Arial;font-size:10px;color:#888;margin-bottom:5px">row</p>
+            <div style="display:flex;flex-direction:row;gap:6px;background:#f4f4f9;padding:8px;border-radius:4px;">
+              <div style="background:#7c3aed;color:white;padding:7px 14px;border-radius:3px;font-family:Arial;font-size:11px;font-weight:700">A</div>
+              <div style="background:#7c3aed;color:white;padding:7px 14px;border-radius:3px;font-family:Arial;font-size:11px;font-weight:700">B</div>
+              <div style="background:#7c3aed;color:white;padding:7px 14px;border-radius:3px;font-family:Arial;font-size:11px;font-weight:700">C</div>
+            </div>
+          </div>
+          <div>
+            <p style="font-family:Arial;font-size:10px;color:#888;margin-bottom:5px">column</p>
+            <div style="display:flex;flex-direction:column;gap:6px;background:#f4f4f9;padding:8px;border-radius:4px;max-width:80px;">
+              <div style="background:#7c3aed;color:white;padding:7px 14px;border-radius:3px;font-family:Arial;font-size:11px;font-weight:700;text-align:center">A</div>
+              <div style="background:#7c3aed;color:white;padding:7px 14px;border-radius:3px;font-family:Arial;font-size:11px;font-weight:700;text-align:center">B</div>
+              <div style="background:#7c3aed;color:white;padding:7px 14px;border-radius:3px;font-family:Arial;font-size:11px;font-weight:700;text-align:center">C</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3><code>justify-content</code></h3>
+    <p>Distribui os itens ao longo do <strong>eixo principal</strong> (horizontal quando <code>row</code>).</p>
+
+    <h3><code>align-items</code></h3>
+    <p>Alinha os itens no <strong>eixo cruzado</strong> (vertical quando <code>row</code>). O contêiner precisa ter altura definida para o efeito ser visível.</p>
+
+    <h3><code>gap</code></h3>
+    <p>Define o espaço entre os itens. Muito mais prático do que usar <code>margin</code> em cada filho.</p>
+
+    <h3><code>flex-wrap</code></h3>
+    <p>Por padrão (<code>nowrap</code>), os itens tentam caber em uma única linha. Com <code>wrap</code>, os que não cabem quebram para a linha de baixo.</p>
+
+    <!-- PLAYGROUND INTERATIVO -->
+    <div class="flex-playground">
+      <div class="flex-playground-header">
+        <span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>
+        playground — explore as propriedades do contêiner
+      </div>
+      <div class="flex-controls">
+        <div class="ctrl-group">
+          <label>FLEX-DIRECTION</label>
+          <select onchange="updateFlex()">
+            <option value="row">row</option>
+            <option value="column">column</option>
+            <option value="row-reverse">row-reverse</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>JUSTIFY-CONTENT</label>
+          <select onchange="updateFlex()">
+            <option value="flex-start">flex-start</option>
+            <option value="flex-end">flex-end</option>
+            <option value="center">center</option>
+            <option value="space-between">space-between</option>
+            <option value="space-around">space-around</option>
+            <option value="space-evenly">space-evenly</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>ALIGN-ITEMS</label>
+          <select onchange="updateFlex()">
+            <option value="flex-start">flex-start</option>
+            <option value="center">center</option>
+            <option value="flex-end">flex-end</option>
+            <option value="stretch">stretch</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>FLEX-WRAP</label>
+          <select onchange="updateFlex()">
+            <option value="nowrap">nowrap</option>
+            <option value="wrap">wrap</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex-result">
+        <div id="flex-container">
+          <div class="flex-item">A</div>
+          <div class="flex-item">B</div>
+          <div class="flex-item">C</div>
+        </div>
+      </div>
+      <div class="flex-code">
+        .container { display: flex; <span id="flex-code-display">flex-direction: row; justify-content: flex-start; align-items: flex-start; flex-wrap: nowrap;</span> }
+      </div>
+    </div>
+
+    <h2>Propriedades do Item (filho)</h2>
+
+    <h3><code>flex</code></h3>
+    <p>Controla quanto espaço um item ocupa em relação aos outros. <code>flex: 1</code> em todos os filhos os faz dividir o espaço igualmente.</p>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>flex: 1 — divisão igual do espaço</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="sel">.container</span> { <span class="prop">display</span>: <span class="val">flex</span>; }
+
+<span class="sel">.card</span> {
+  <span class="prop">flex</span>: <span class="val">1</span>; <span class="cmt">← divide igualmente</span>
+}
+
+<span class="sel">.card-grande</span> {
+  <span class="prop">flex</span>: <span class="val">2</span>; <span class="cmt">← ocupa o dobro</span>
+}</pre></div>
+        <div class="demo-result" style="align-items:stretch;padding:1.2rem;">
+          <div style="display:flex;gap:8px;width:100%;">
+            <div style="flex:1;background:#e0e7ff;padding:12px;border-radius:4px;font-family:Arial;font-size:11px;color:#3730a3;text-align:center;font-weight:700">flex: 1</div>
+            <div style="flex:2;background:#c7d2fe;padding:12px;border-radius:4px;font-family:Arial;font-size:11px;color:#3730a3;text-align:center;font-weight:700">flex: 2 (dobro)</div>
+            <div style="flex:1;background:#e0e7ff;padding:12px;border-radius:4px;font-family:Arial;font-size:11px;color:#3730a3;text-align:center;font-weight:700">flex: 1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3><code>align-self</code></h3>
+    <p>Sobrescreve o <code>align-items</code> do contêiner para um item específico.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Propriedade</th><th>Vai em</th><th>O que faz</th></tr></thead>
+        <tbody>
+          <tr><td>display: flex</td><td>Contêiner</td><td>Ativa o Flexbox</td></tr>
+          <tr><td>flex-direction</td><td>Contêiner</td><td>Direção dos itens — <code>row</code> ou <code>column</code></td></tr>
+          <tr><td>justify-content</td><td>Contêiner</td><td>Alinhamento no eixo principal</td></tr>
+          <tr><td>align-items</td><td>Contêiner</td><td>Alinhamento no eixo cruzado</td></tr>
+          <tr><td>gap</td><td>Contêiner</td><td>Espaço entre os itens</td></tr>
+          <tr><td>flex-wrap</td><td>Contêiner</td><td>Quebra de linha automática</td></tr>
+          <tr><td>flex</td><td>Item</td><td>Proporção de espaço ocupado</td></tr>
+          <tr><td>align-self</td><td>Item</td><td>Alinhamento individual no eixo cruzado</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ═══════════════════════════════════════
+       4. MEDIA QUERIES
+  ═══════════════════════════════════════ -->
+  <section class="section" id="media-queries">
+    <h1>Media Queries</h1>
+
+    <p>Media Queries são <strong>regras condicionais</strong> no CSS — um bloco de estilos que só é aplicado quando uma condição é verdadeira, geralmente o tamanho da tela.</p>
+
+    <h2>Sintaxe básica</h2>
+
+    <div class="code-block">
+      <div class="code-block-header"><span class="code-lang">css</span></div>
+      <pre><span class="kw">@media</span> (<span class="prop">max-width</span>: <span class="val">768px</span>) {
+  <span class="cmt">/* Este CSS só é aplicado quando
+     a tela tiver 768px ou menos */</span>
+  <span class="sel">.menu</span> {
+    <span class="prop">flex-direction</span>: <span class="val">column</span>;
+  }
+}</pre>
+    </div>
+
+    <h2><code>max-width</code> vs <code>min-width</code></h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Condição</th><th>Aplica o estilo quando...</th><th>Uso comum</th></tr></thead>
+        <tbody>
+          <tr><td>max-width: 768px</td><td>A tela tem <strong>768px ou menos</strong></td><td>Ajustes para mobile</td></tr>
+          <tr><td>min-width: 769px</td><td>A tela tem <strong>769px ou mais</strong></td><td>Ajustes para desktop</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Breakpoints comuns</h2>
+    <p>Breakpoints são os pontos de largura onde o layout muda. Não existe uma lista oficial — mas estes são os mais usados:</p>
+
+    <div class="bp-grid">
+      <div class="bp-card">
+        <div class="bp-icon">📱</div>
+        <div class="bp-range">até 480px</div>
+        <div class="bp-name">Mobile</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">📟</div>
+        <div class="bp-range">481px — 768px</div>
+        <div class="bp-name">Tablet</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">💻</div>
+        <div class="bp-range">769px — 1200px</div>
+        <div class="bp-name">Laptop</div>
+      </div>
+      <div class="bp-card">
+        <div class="bp-icon">🖥️</div>
+        <div class="bp-range">1201px ou mais</div>
+        <div class="bp-name">Desktop</div>
+      </div>
+    </div>
+
+    <h2>Exemplo prático</h2>
+    <p>Um layout com duas colunas no desktop que vira uma coluna no mobile:</p>
+
+    <div class="demo">
+      <div class="demo-label"><span class="dot dot-r"></span><span class="dot dot-a"></span><span class="dot dot-g"></span>media query — layout responsivo</div>
+      <div class="demo-split">
+        <div class="demo-code-pane"><pre><span class="cmt">/* Desktop — duas colunas */</span>
+<span class="sel">.container</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">gap</span>: <span class="val">20px</span>;
+}
+
+<span class="cmt">/* Mobile — uma coluna */</span>
+<span class="kw">@media</span> (<span class="prop">max-width</span>: <span class="val">768px</span>) {
+  <span class="sel">.container</span> {
+    <span class="prop">flex-direction</span>: <span class="val">column</span>;
+  }
+}</pre></div>
+        <div class="demo-result" style="flex-direction:column;gap:16px;background:white;padding:1.2rem;align-items:stretch;">
+          <div>
+            <p style="font-family:Arial;font-size:10px;color:#888;margin-bottom:6px">Desktop</p>
+            <div style="display:flex;gap:8px;">
+              <div style="flex:1;background:#bfdbfe;padding:10px;border-radius:4px;font-family:Arial;font-size:11px;color:#1e40af;text-align:center;font-weight:700">Conteúdo</div>
+              <div style="width:90px;background:#e0e7ff;padding:10px;border-radius:4px;font-family:Arial;font-size:11px;color:#3730a3;text-align:center;font-weight:700">Sidebar</div>
+            </div>
+          </div>
+          <div>
+            <p style="font-family:Arial;font-size:10px;color:#888;margin-bottom:6px">Mobile (max-width: 768px)</p>
+            <div style="display:flex;flex-direction:column;gap:6px;max-width:160px;">
+              <div style="background:#bfdbfe;padding:10px;border-radius:4px;font-family:Arial;font-size:11px;color:#1e40af;text-align:center;font-weight:700">Conteúdo</div>
+              <div style="background:#e0e7ff;padding:10px;border-radius:4px;font-family:Arial;font-size:11px;color:#3730a3;text-align:center;font-weight:700">Sidebar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout green">
+      <span class="callout-icon">🔍</span>
+      <div><p>Para testar suas media queries, abra o <strong>DevTools</strong> (F12) e clique no ícone de dispositivo móvel. Você pode redimensionar a janela e ver os estilos mudando em tempo real.</p></div>
+    </div>
+
+    <h2>Múltiplas condições</h2>
+    <p>Você pode combinar condições com <code>and</code> para criar faixas específicas:</p>
+
+    <div class="code-block">
+      <div class="code-block-header"><span class="code-lang">css</span></div>
+      <pre><span class="cmt">/* Apenas entre 481px e 768px (tablets) */</span>
+<span class="kw">@media</span> (<span class="prop">min-width</span>: <span class="val">481px</span>) <span class="kw">and</span> (<span class="prop">max-width</span>: <span class="val">768px</span>) {
+  <span class="sel">body</span> {
+    <span class="prop">background-color</span>: <span class="val">powderblue</span>;
+  }
+}</pre>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- ═══════════════════════════════════════
+       5. RESPONSIVIDADE
+  ═══════════════════════════════════════ -->
+  <section class="section" id="responsividade">
+    <h1>Responsividade — Escolhendo a Ferramenta Certa</h1>
+
+    <p>Existem várias formas de criar layouts responsivos no CSS. Cada uma tem um propósito diferente — a chave é saber quando usar cada uma.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Ferramenta</th><th>Quando usar</th></tr></thead>
+        <tbody>
+          <tr><td>Flexbox</td><td>Organizar elementos <strong>em uma dimensão</strong> — linha ou coluna. Menus, cards, barras de navegação.</td></tr>
+          <tr><td>Grid</td><td>Criar layouts <strong>em duas dimensões</strong> — linhas e colunas ao mesmo tempo. Estrutura geral da página.</td></tr>
+          <tr><td>Float</td><td>Texto ao redor de imagens ou colunas simples. Técnica mais antiga, mas ainda válida.</td></tr>
+          <tr><td>Media Queries</td><td>Ajustar o layout para tamanhos de tela específicos. Usada em combinação com as outras.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout purple">
+      <span class="callout-icon">💡</span>
+      <div><p>Na prática, você vai <strong>combinar essas ferramentas</strong>: Grid para a estrutura geral da página, Flexbox para alinhar elementos dentro das seções, e Media Queries para os ajustes em telas menores.</p></div>
+    </div>
+
+    <h2>Exemplo — Layout completo e responsivo</h2>
+
+    <div class="collapse-wrap">
+      <button class="collapse-toggle" onclick="toggleCollapse(this)">
+        📄 Ver código de exemplo completo
+        <span class="arrow">▶</span>
+      </button>
+      <div class="collapse-body">
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-lang">css</span></div>
+          <pre><span class="cmt">/* Estrutura geral com Flexbox */</span>
+<span class="sel">.pagina</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">flex-direction</span>: <span class="val">column</span>;
+  <span class="prop">min-height</span>: <span class="val">100vh</span>;
+}
+
+<span class="sel">.main</span> {
+  <span class="prop">display</span>: <span class="val">flex</span>;
+  <span class="prop">gap</span>: <span class="val">24px</span>;
+  <span class="prop">max-width</span>: <span class="val">1000px</span>;
+  <span class="prop">margin</span>: <span class="val">0 auto</span>;
+  <span class="prop">padding</span>: <span class="val">20px</span>;
+}
+
+<span class="sel">.conteudo</span> { <span class="prop">flex</span>: <span class="val">1</span>; }
+<span class="sel">.sidebar</span>  { <span class="prop">width</span>: <span class="val">260px</span>; }
+
+<span class="cmt">/* Responsividade com Media Query */</span>
+<span class="kw">@media</span> (<span class="prop">max-width</span>: <span class="val">768px</span>) {
+  <span class="sel">.main</span> {
+    <span class="prop">flex-direction</span>: <span class="val">column</span>;
+  }
+  <span class="sel">.sidebar</span> {
+    <span class="prop">width</span>: <span class="val">100%</span>;
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  function toggleCollapse(btn) {
+    const body = btn.nextElementSibling;
+    btn.classList.toggle('open');
+    body.classList.toggle('open');
+  }
+
+  function updateFlex() {
+    const selects = document.querySelectorAll('.flex-controls select');
+    const [direction, justify, align, wrap] = [...selects].map(s => s.value);
+    const container = document.getElementById('flex-container');
+    container.style.flexDirection = direction;
+    container.style.justifyContent = justify;
+    container.style.alignItems = align;
+    container.style.flexWrap = wrap;
+    document.getElementById('flex-code-display').textContent =
+      `flex-direction: ${direction}; justify-content: ${justify}; align-items: ${align}; flex-wrap: ${wrap};`;
+  }
+
+  const sections = ['display','float','flexbox','media-queries','responsividade'];
+  const navLinks = document.querySelectorAll('#nav a');
+
+  function updateNav() {
+    let current = sections[0];
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 60) current = id;
+    });
+    navLinks.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+    });
+  }
+
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+</script>
+</body>
+</html>
