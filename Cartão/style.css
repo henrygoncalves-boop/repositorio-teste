@@ -1,0 +1,30 @@
+body {
+    background-color: cornflowerblue;
+            font-family: 'Arial', sans-serif;
+            font-size: 18px;
+            text-align: center;
+}
+h1 {
+    color: #ff6600;
+    text-transform: uppercase;
+    font-size: 36px;
+}
+.cartao {
+    width: 400px;
+    background-color: #ffffff;
+    border: 2px solid #ff6600;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+ul{
+    padding: 50px;
+    border-radius: 10%;
+    box-shadow: 50;
+}
+.img{
+    border-radius: 50%;
+    border-color: black;
+}
